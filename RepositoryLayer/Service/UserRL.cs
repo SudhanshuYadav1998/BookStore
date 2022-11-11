@@ -159,6 +159,7 @@ namespace RepositoryLayer.Service
         }
         public bool ResetPassword(string EmailId, string Password)
         {
+            
             this.sqlConnection = new SqlConnection(this.configuration.GetConnectionString("BookStore"));
             using (sqlConnection)
                 try
