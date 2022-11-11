@@ -29,10 +29,10 @@ namespace RepositoryLayer.Service
             {
 
                 SqlCommand command = new SqlCommand("spAddUser", this.sqlConnection);
-                    command.CommandType = CommandType.StoredProcedure;
+                command.CommandType = CommandType.StoredProcedure;
                 this.sqlConnection.Open();
 
-                command.Parameters.AddWithValue("@fullname", usermodel.FullName);
+                    command.Parameters.AddWithValue("@fullname", usermodel.FullName);
                     command.Parameters.AddWithValue("@email", usermodel.Email);
                     command.Parameters.AddWithValue("@password", usermodel.Password);
                     command.Parameters.AddWithValue("@mobilenumber", usermodel.Mobile_Number);
@@ -57,40 +57,56 @@ namespace RepositoryLayer.Service
             }
 
         }
-        public string UserLogin(UserLogin userlogin)
+        public string UserLogin(LoginModel login)
         {
-            try
-            {
-                //   if (Decrypt(Enteredlogin.Password)==userlogin.Password)
-                if ((Enteredlogin.Password) == userlogin.Password)
-
-
+            this.sqlConnection = new SqlConnection(this.configuration.GetConnectionString("BookStore"));
+            using (sqlConnection)
+                try
                 {
-                    string token = GenerateSecurityToken(Enteredlogin.Email, Enteredlogin.UserId);
-                    return token;
+                    RegistrationModel registrationmodel = new RegistrationModel();
+                    SqlCommand command = new SqlCommand("spUserLogin", this.sqlConnection);
+                    command.CommandType = CommandType.StoredProcedure;
+                    this.sqlConnection.Open();
 
+                    command.Parameters.AddWithValue("@email", login.Email);
+                    command.Parameters.AddWithValue("@password", login.Password);
+                    SqlDataReader data=command.ExecuteReader();
+                    if(data.FieldCount!=0)
+                    {
+                        int UserId = 0;
+
+                        while (data.Read())
+                        {
+                            login.Email = Convert.ToString(data["Email"]);
+                            login.Password = Convert.ToString(data["Password"]);
+                            UserId = Convert.ToInt32(data["UserId"]);
+                        }
+                        string token = GenerateSecurityToken(login.Email, UserId);
+                        return token;
+                    }
+                    else
+                    {
+                        return null ;
+                    }
                 }
-                else
+                catch(Exception e)
                 {
-                    return null;
+                    throw e;
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+                finally { this.sqlConnection.Close(); }
+           
         }
 
-        private string GenerateSecurityToken(string Email, long UserId)
+        private string GenerateSecurityToken(string Email, int UserId)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_Appsettings["Jwt:SecKey"]));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.configuration["Jwt:SecKey"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var claims = new[] {
                 new Claim(ClaimTypes.Email,Email),
                 new Claim("UserId",UserId.ToString())
             };
-            var token = new JwtSecurityToken(_Appsettings["Jwt:Issuer"],
-              _Appsettings["Jwt:Issuer"],
+            var token = new JwtSecurityToken(this.configuration["Jwt:Issuer"],
+              this.configuration["Jwt:Issuer"],
               claims,
               expires: DateTime.Now.AddMinutes(60),
               signingCredentials: credentials);
