@@ -1,6 +1,7 @@
 ﻿using BusinessLayer.Interface;
 using CommonLayer.Models;
 using RepositoryLayer.Interface;
+using RepositoryLayer.Service;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -38,5 +39,32 @@ namespace BusinessLayer.Service
                 throw;
             }
         }
+        public string ForgetPassword(string Email)
+        {
+            try
+            {
+                return this.userRL.ForgetPassword(Email);
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public bool ResetPassword(string EmailId, string Password)
+        {
+            try
+            {
+                return this.userRL.ResetPassword(EmailId, Password);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+
     }
 }

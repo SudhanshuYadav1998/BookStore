@@ -71,7 +71,7 @@ namespace RepositoryLayer.Service
                     command.Parameters.AddWithValue("@email", login.Email);
                     command.Parameters.AddWithValue("@password", login.Password);
                     SqlDataReader data=command.ExecuteReader();
-                    if(data.FieldCount!=0)
+                    if(data.HasRows)
                     {
                         int UserId = 0;
 
@@ -102,6 +102,7 @@ namespace RepositoryLayer.Service
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.configuration["Jwt:SecKey"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var claims = new[] {
+                new Claim(ClaimTypes.Role,"User"),
                 new Claim(ClaimTypes.Email,Email),
                 new Claim("UserId",UserId.ToString())
             };
@@ -113,5 +114,81 @@ namespace RepositoryLayer.Service
             return new JwtSecurityTokenHandler().WriteToken(token);
 
         }
+        public string ForgetPassword(string Email)
+        {
+            this.sqlConnection = new SqlConnection(this.configuration.GetConnectionString("BookStore"));
+            using (sqlConnection)
+                try
+                {
+                    RegistrationModel registrationModel = new RegistrationModel();
+                    SqlCommand command = new SqlCommand("ForgotPassword", this.sqlConnection);
+                    command.CommandType = CommandType.StoredProcedure;
+                    this.sqlConnection.Open();
+
+                    command.Parameters.AddWithValue("@EmailId", Email);
+                    SqlDataReader reader = command.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        int userId=0;
+                        LoginModel loginModel = new LoginModel();
+                        while (reader.Read()) 
+                        {
+                            Email = Convert.ToString(reader["Email"]);
+                            userId = Convert.ToInt32(reader["UserId"]);
+
+                        }
+                        this.sqlConnection.Close();
+                        var token = GenerateSecurityToken(Email, userId);
+                        MSMQModel mSMQModel = new MSMQModel();
+                        mSMQModel.sendData2Queue(token);
+                        return token.ToString();
+                    }
+                    else
+                    {
+                        return null;
+                    }
+
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+                
+
+        }
+        public bool ResetPassword(string EmailId, string Password)
+        {
+            this.sqlConnection = new SqlConnection(this.configuration.GetConnectionString("BookStore"));
+            using (sqlConnection)
+                try
+                {
+                    RegistrationModel usermodel = new RegistrationModel();
+                    SqlCommand command = new SqlCommand("spResetPassword", this.sqlConnection);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@EmailId", EmailId);
+                    command.Parameters.AddWithValue("@Password", Password);
+                    this.sqlConnection.Open();
+                    var result=command.ExecuteNonQuery();
+                    this.sqlConnection.Close();
+                    if(result!=0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+
+
+        }
+
     }
 }
