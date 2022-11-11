@@ -60,6 +60,7 @@ namespace RepositoryLayer.Service
 
         }
 
+
         private string GenerateSecurityToken(string Email, int AdminId)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.configuration["Jwt:SecKey"]));
