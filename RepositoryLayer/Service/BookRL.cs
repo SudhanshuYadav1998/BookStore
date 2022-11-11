@@ -21,6 +21,7 @@ namespace RepositoryLayer.Service
 
         public BookModel AddBook(AddBook addBook)
         {
+
             this.con = new SqlConnection(this.configuration.GetConnectionString("BookStore"));
             using (con)
             {
