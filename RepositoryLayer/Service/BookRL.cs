@@ -153,6 +153,39 @@ namespace RepositoryLayer.Service
                 throw ex;
             }
         }
+        public string DeleteBook(int bookId)
+        {
+            this.con = new SqlConnection(this.configuration.GetConnectionString("BookStore"));
+            using (con)
+            {
+                try
+                {
+                    SqlCommand cmd = new SqlCommand("spDeleteBook", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@BookId", bookId);
+
+                    con.Open();
+                    var result = cmd.ExecuteNonQuery();
+                    con.Close();
+
+                    if (result != 0)
+                    {
+                        return "Book Deleted Successfully";
+                    }
+                    else
+                    {
+                        return "Failed to Delete the Book";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+
+            }
+
+        }
         public BookModel ReadData(BookModel bookModel, SqlDataReader rdr)
         {
             bookModel.BookId = Convert.ToInt32(rdr["BookId"]);

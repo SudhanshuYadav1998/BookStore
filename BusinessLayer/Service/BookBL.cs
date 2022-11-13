@@ -34,8 +34,10 @@ namespace BusinessLayer.Service
         {
             return this.bookRL.GetBookById(bookId);
         }
-
-
+        public string DeleteBook(int bookId)
+        {
+            return bookRL.DeleteBook(bookId);
+        }
 
     }
 }

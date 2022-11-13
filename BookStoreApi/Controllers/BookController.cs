@@ -81,5 +81,27 @@ namespace BookStoreApi.Controllers
                 return NotFound(new { success = false, message = ex.Message });
             }
         }
+        [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("DeleteBook")]
+        public IActionResult DeleteBookbyId(int BookId)
+        {
+            try
+            {
+                var res = bookBL.DeleteBook(BookId);
+                if (res != null)
+                {
+                    return Created("", new { success = true, message = "Book Deleted sucessfully" });
+                }
+                else
+                {
+                    return BadRequest(new { success = false, message = "Faild to delete Book" });
+                }
+            }
+            catch (System.Exception ex)
+            {
+                return NotFound(new { success = false, message = ex.Message });
+            }
+        }
+
     }
 }
