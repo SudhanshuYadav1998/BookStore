@@ -126,7 +126,6 @@ namespace RepositoryLayer.Service
                     BookModel bookModel = new BookModel();
                     SqlCommand cmd = new SqlCommand("spGetBookById", con);
                     cmd.CommandType = CommandType.StoredProcedure;
-
                     cmd.Parameters.AddWithValue("@BookId", bookId);
 
                     con.Open();
