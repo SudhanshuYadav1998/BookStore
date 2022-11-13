@@ -75,5 +75,99 @@ namespace RepositoryLayer.Service
             }
 
         }
+        public List<BookModel> GetAllBooks()
+        {
+            this.con = new SqlConnection(this.configuration.GetConnectionString("BookStore"));
+            using (con)
+            {
+                try
+                {
+                    List<BookModel> bookModel = new List<BookModel>();
+                    SqlCommand cmd = new SqlCommand("spGetAllBooks", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    con.Open();
+                    SqlDataReader rdr = cmd.ExecuteReader();
+
+                    if (rdr.HasRows)
+                    {
+                        while (rdr.Read())
+                        {
+                            BookModel book = new BookModel();
+                            BookModel model;
+                            model = ReadData(book, rdr);
+                            bookModel.Add(model);
+                        }
+                        con.Close();
+                        return bookModel;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+
+            }
+
+        }
+        public BookModel GetBookById(int bookId)
+        {
+
+            try
+            {
+                this.con = new SqlConnection(this.configuration.GetConnectionString("BookStore"));
+                using (con)
+                {
+                    BookModel bookModel = new BookModel();
+                    SqlCommand cmd = new SqlCommand("spGetBookById", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@BookId", bookId);
+
+                    con.Open();
+                    SqlDataReader rdr = cmd.ExecuteReader();
+
+
+                    if (rdr.HasRows)
+                    {
+                        while (rdr.Read())
+                        {
+                            bookModel = ReadData(bookModel, rdr);
+                        }
+                        con.Close();
+                        return bookModel;
+                    }
+                    else
+                    {
+                        con.Close();
+                        return null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public BookModel ReadData(BookModel bookModel, SqlDataReader rdr)
+        {
+            bookModel.BookId = Convert.ToInt32(rdr["BookId"]);
+            bookModel.BookName = Convert.ToString(rdr["BookName"]);
+            bookModel.Author = Convert.ToString(rdr["Author"]);
+            bookModel.BookImage = Convert.ToString(rdr["BookImage"]);
+            bookModel.BookDetail = Convert.ToString(rdr["BookDetail"]);
+            bookModel.DiscountPrice = Convert.ToDouble(rdr["DiscountPrice"]);
+            bookModel.ActualPrice = Convert.ToDouble(rdr["ActualPrice"]);
+            bookModel.Quantity = Convert.ToInt32(rdr["Quantity"]);
+            bookModel.Rating = Convert.ToDouble(rdr["Rating"]);
+            bookModel.RatingCount = Convert.ToInt32(rdr["RatingCount"]);
+
+            return bookModel;
+        }
     }
 }

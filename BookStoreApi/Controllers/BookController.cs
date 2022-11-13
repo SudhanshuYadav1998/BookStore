@@ -39,5 +39,47 @@ namespace BookStoreApi.Controllers
                 return NotFound(new { success = false, message = ex.Message });
             }
         }
+        [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("GetAllBook")]
+        public IActionResult GetAllBook()
+        {
+            try
+            {
+                var res = bookBL.GetAllBooks();
+                if (res != null)
+                {
+                    return Created("", new { data = res });
+                }
+                else
+                {
+                    return BadRequest(new { success = false, message = "Faild to getall Book" });
+                }
+            }
+            catch (System.Exception ex)
+            {
+                return NotFound(new { success = false, message = ex.Message });
+            }
+        }
+        [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("GetBookById")]
+        public IActionResult GetBookbyId(int BookId)
+        {
+            try
+            {
+                var res = bookBL.GetBookById(BookId);
+                if (res != null)
+                {
+                    return Created("", new { data = res });
+                }
+                else
+                {
+                    return BadRequest(new { success = false, message = "Faild to get Book" });
+                }
+            }
+            catch (System.Exception ex)
+            {
+                return NotFound(new { success = false, message = ex.Message });
+            }
+        }
     }
 }

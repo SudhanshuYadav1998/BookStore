@@ -120,17 +120,15 @@ namespace RepositoryLayer.Service
             using (sqlConnection)
                 try
                 {
-                    RegistrationModel registrationModel = new RegistrationModel();
                     SqlCommand command = new SqlCommand("ForgotPassword", this.sqlConnection);
                     command.CommandType = CommandType.StoredProcedure;
                     this.sqlConnection.Open();
 
                     command.Parameters.AddWithValue("@EmailId", Email);
                     SqlDataReader reader = command.ExecuteReader();
-                    if (reader.HasRows)
+                    if (reader.RecordsAffected!=0)
                     {
                         int userId=0;
-                        LoginModel loginModel = new LoginModel();
                         while (reader.Read()) 
                         {
                             Email = Convert.ToString(reader["Email"]);

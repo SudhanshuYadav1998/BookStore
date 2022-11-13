@@ -41,7 +41,7 @@ namespace CommonLayer.Models
                     Credentials = new NetworkCredential("sy7040@gmail.com", "sxxedrvpvolofydu"),
                     EnableSsl = true,
                 };
-                SMTP.Send("sy7040@gmail.com", " sy7040@gmail.com", subject, body);
+                SMTP.Send("sy7040@gmail.com", " yadavsudhanshu51@yahoo.com", subject, body);
 
                 MessageQ.BeginReceive();
             }

@@ -122,7 +122,7 @@ namespace BookStoreApi
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("../swagger/v1/swagger.json", "Fundoo Notes");
+                c.SwaggerEndpoint("../swagger/v1/swagger.json", "BookStore");
             });
             //This middleware is used to redirects HTTP requests to HTTPS.
             app.UseHttpsRedirection();
