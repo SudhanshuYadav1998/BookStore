@@ -82,7 +82,8 @@ namespace BookStoreApi.Controllers
             }
         }
         [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
-        [HttpGet("DeleteBook")]
+        [Authorize(Roles = Role.Admin)]
+        [HttpDelete("DeleteBook")]
         public IActionResult DeleteBookbyId(int BookId)
         {
             try
@@ -102,6 +103,29 @@ namespace BookStoreApi.Controllers
                 return NotFound(new { success = false, message = ex.Message });
             }
         }
+        [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = Role.Admin)]
+        [HttpPut("UpdateBook")]
+        public IActionResult UpdateBook(BookModel bookModel)
+        {
+            try
+            {
+                var res = bookBL.UpdateBook(bookModel);
+                if (res != null)
+                {
+                    return Created("", new { success = true, message = "Book updated sucessfully" ,data=res});
+                }
+                else
+                {
+                    return BadRequest(new { success = false, message = "Faild to update Book" });
+                }
+            }
+            catch (System.Exception ex)
+            {
+                return NotFound(new { success = false, message = ex.Message });
+            }
+        }
+
 
     }
 }
