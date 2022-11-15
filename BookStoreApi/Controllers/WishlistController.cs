@@ -42,7 +42,7 @@ namespace BookStoreApi.Controllers
                 throw;
             }
         }
-        [HttpPost("GetAllWishlist")]
+        [HttpGet("GetAllWishlist")]
         public IActionResult GetWishlistitem()
         {
             try
