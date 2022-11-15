@@ -66,6 +66,29 @@ namespace BookStoreApi.Controllers
                 throw;
             }
         }
+        [HttpGet("GetAllCartlist")]
+        public IActionResult GetCartlistitem()
+        {
+            try
+            {
+                int userId = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "UserId").Value);
+                var result = cartBL.GetAllCart(userId);
+                if (result != null)
+                {
+                    return this.Ok(new { data = result });
+
+                }
+                else
+                {
+                    return this.BadRequest();
+                }
+            }
+            catch (System.Exception)
+            {
+
+                throw;
+            }
+        }
 
     }
 }

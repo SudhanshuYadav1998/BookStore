@@ -23,6 +23,10 @@ namespace BusinessLayer.Service
         {
             return this.cartRL.RemoveFromCart(cartId);
         }
+        public List<CartResponse> GetAllCart(int userId)
+        {
+            return this.cartRL.GetAllCart(userId);
+        }
 
 
     }

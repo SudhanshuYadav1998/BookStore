@@ -9,7 +9,7 @@ namespace BusinessLayer.Interface
     {
         public AddToCart AddToCart(AddToCart addCart, int userId);
         public string RemoveFromCart(int cartId);
-
+        public List<CartResponse> GetAllCart(int userId);
 
     }
 }
