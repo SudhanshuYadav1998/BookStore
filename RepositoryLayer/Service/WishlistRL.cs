@@ -72,10 +72,18 @@ namespace RepositoryLayer.Service
                     {
                         while (rdr.Read())
                         {
-                            WishlistResponse wishList = new WishlistResponse();
-                            WishlistResponse temp;
-                            temp = ReadData(wishList, rdr);
-                            wishListResponse.Add(temp);
+                            WishlistResponse wishList = new WishlistResponse
+                            {
+                                BookId = Convert.ToInt32(rdr["BookId"]),
+                                UserId = Convert.ToInt32(rdr["UserId"]),
+                                WishListId = Convert.ToInt32(rdr["WishListId"]),
+                                BookName = Convert.ToString(rdr["BookName"]),
+                                Author = Convert.ToString(rdr["Author"]),
+                                BookImage = Convert.ToString(rdr["BookImage"]),
+                                DiscountPrice = Convert.ToDouble(rdr["DiscountPrice"]),
+                                ActualPrice = Convert.ToDouble(rdr["ActualPrice"])
+                            };
+                            wishListResponse.Add(wishList);
                         }
                         con.Close();
                         return wishListResponse;
@@ -126,18 +134,5 @@ namespace RepositoryLayer.Service
             }
         }
 
-        public WishlistResponse ReadData(WishlistResponse wishList, SqlDataReader rdr)
-        {
-            wishList.BookId = Convert.ToInt32(rdr["BookId"]);
-            wishList.UserId = Convert.ToInt32(rdr["UserId"]);
-            wishList.WishListId = Convert.ToInt32(rdr["WishListId"]);
-            wishList.BookName = Convert.ToString(rdr["BookName"]);
-            wishList.Author = Convert.ToString(rdr["Author"]);
-            wishList.BookImage = Convert.ToString(rdr["BookImage"]);
-            wishList.DiscountPrice = Convert.ToDouble(rdr["DiscountPrice"]);
-            wishList.ActualPrice = Convert.ToDouble(rdr["ActualPrice"]);
-
-            return wishList;
-        }
     }
 }

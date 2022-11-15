@@ -8,6 +8,7 @@ using System;
 
 namespace BookStoreApi.Controllers
 {
+    [Authorize(Roles = Role.User)]
     [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
