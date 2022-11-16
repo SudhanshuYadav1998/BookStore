@@ -27,6 +27,10 @@ namespace BusinessLayer.Service
         {
             return this.cartRL.GetAllCart(userId);
         }
+        public string UpdateQtyInCart(int cartId, int bookQty, int userId)
+        {
+            return this.cartRL.UpdateQtyInCart(cartId, bookQty, userId);
+        }
 
 
     }

@@ -133,6 +133,39 @@ namespace RepositoryLayer.Service
 
             }
         }
+        public string UpdateQtyInCart(int cartId, int bookQty, int userId)
+        {
+            this.con = new SqlConnection(this.configuration.GetConnectionString("BookStore"));
+            using (con)
+            {
+                try
+                {
+                    CartResponse cartResponses = new CartResponse();
+                    SqlCommand cmd = new SqlCommand("spUpdateQtyInCart", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
 
+                    cmd.Parameters.AddWithValue("@CartId", cartId);
+                    cmd.Parameters.AddWithValue("@BooksQty", bookQty);
+
+                    con.Open();
+                    var result = cmd.ExecuteNonQuery();
+                    con.Close();
+
+                    if (result != 0)
+                    {
+                        return "Quantity updated in Cart successfully";
+                    }
+                    else
+                    {
+                        return "Failed to Update Quantity in Cart";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+
+            }
+        }
     }
 }

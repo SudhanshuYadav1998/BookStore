@@ -39,6 +39,7 @@ namespace BookStoreApi.Controllers
                 return NotFound(new { success = false, message = ex.Message });
             }
         }
+        [Authorize(Roles = Role.User)]
         [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("GetAllBook")]
         public IActionResult GetAllBook()
@@ -60,6 +61,7 @@ namespace BookStoreApi.Controllers
                 return NotFound(new { success = false, message = ex.Message });
             }
         }
+        [Authorize(Roles = Role.User)]
         [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("GetBookById")]
         public IActionResult GetBookbyId(int BookId)

@@ -89,6 +89,26 @@ namespace BookStoreApi.Controllers
                 throw;
             }
         }
-
+        [HttpPut("UpdateQty")]
+        public IActionResult UpdateQtyInCart(int cartId, int bookQty)
+        {
+            try
+            {
+                int userId = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "UserId").Value);
+                var res = cartBL.UpdateQtyInCart(cartId, bookQty, userId);
+                if (res.ToLower().Contains("success"))
+                {
+                    return Ok(new { success = true, message = "Update Qty sucessfull" });
+                }
+                else
+                {
+                    return BadRequest(new { success = false, message = "Faild to update Qty" });
+                }
+            }
+            catch (System.Exception ex)
+            {
+                return NotFound(new { success = false, message = ex.Message });
+            }
+        }
     }
 }
