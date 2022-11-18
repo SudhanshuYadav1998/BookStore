@@ -23,6 +23,10 @@ namespace BusinessLayer.Service
         {
             return this.ordersRL.GetAllOrders(userId);
         }
+        public string DeleteOrder(int OrderId, int userId)
+        {
+            return ordersRL.DeleteOrder(OrderId,userId);
+        }
 
 
     }

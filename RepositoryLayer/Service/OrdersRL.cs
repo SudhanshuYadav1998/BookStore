@@ -24,7 +24,6 @@ namespace RepositoryLayer.Service
             {
                 con.Open();
                 SqlCommand cmd = con.CreateCommand();
-                SqlTransaction sqlTran = null;
                 try
                 {
                     List<CartResponse> cartList = new List<CartResponse>();
@@ -33,7 +32,6 @@ namespace RepositoryLayer.Service
                     cmd = new SqlCommand("spGetAllCart", con);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@UserId", userId);
-                    cmd.Transaction = sqlTran;
                     SqlDataReader reader = cmd.ExecuteReader();
 
                     if (reader.HasRows)
@@ -41,13 +39,12 @@ namespace RepositoryLayer.Service
                         while (reader.Read())
                         {
                             CartResponse cart = new CartResponse();
-                            cart.UserId = Convert.ToInt32(reader["UserId"] == DBNull.Value ? default : reader["UserId"]);
-                            cart.BookId = Convert.ToInt32(reader["BookId"] == DBNull.Value ? default : reader["BookId"]);
+                            cart.UserId = Convert.ToInt32(reader["UserId"]);
+                            cart.BookId = Convert.ToInt32(reader["BookId"]);
                             cartList.Add(cart);
                         }
                         reader.Close();
 
-                        sqlTran = con.BeginTransaction();
                         foreach (var cart in cartList)
                         {
                             cmd = new SqlCommand("spAddOrders", con);
@@ -55,7 +52,6 @@ namespace RepositoryLayer.Service
                             cmd.Parameters.AddWithValue("@BookId", cart.BookId);
                             cmd.Parameters.AddWithValue("@UserId", userId);
                             cmd.Parameters.AddWithValue("@AddressId", addOrder.AddressId);
-                            cmd.Transaction = sqlTran;
                             int result = Convert.ToInt32(cmd.ExecuteScalar());
                             if (result != 2 && result != 3 && result != 4)
                             {
@@ -66,7 +62,6 @@ namespace RepositoryLayer.Service
                                 return null;
                             }
                         }
-                        sqlTran.Commit();
                         con.Close();
                         return "Congratulations! Order Placed Successfully";
                     }
@@ -129,6 +124,41 @@ namespace RepositoryLayer.Service
                 }
 
             }
+        }
+        public string DeleteOrder(int OrderId,int userId)
+        {
+            this.con = new SqlConnection(this.configuration.GetConnectionString("BookStore"));
+            using (con)
+            {
+                try
+                {
+                    SqlCommand cmd = new SqlCommand("spRemoveFromOrder", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@OrderId", OrderId);
+                    cmd.Parameters.AddWithValue("@UserId", userId);
+
+
+                    con.Open();
+                    var result = cmd.ExecuteNonQuery();
+                    con.Close();
+
+                    if (result != 0)
+                    {
+                        return "Order Deleted Successfully";
+                    }
+                    else
+                    {
+                        return "Failed to Delete the Order";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+
+            }
+
         }
     }
 }

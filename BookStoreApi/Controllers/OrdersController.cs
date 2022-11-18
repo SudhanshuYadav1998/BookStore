@@ -64,5 +64,28 @@ namespace BookStoreApi.Controllers
                 return NotFound(new { success = false, message = ex.Message });
             }
         }
+        [HttpDelete("Delete")]
+        public IActionResult DeleteWishlist(int OrderId)
+        {
+            try
+            {
+                int userId = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "UserId").Value);
+                var result = ordersBL.DeleteOrder(OrderId,userId);
+                if (result != null)
+                {
+                    return this.Ok(new { success = true, data = result });
+
+                }
+                else
+                {
+                    return this.BadRequest();
+                }
+            }
+            catch (System.Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }
