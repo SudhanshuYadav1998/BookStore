@@ -80,6 +80,11 @@ namespace BookStoreApi
             services.AddTransient<ICartRL, CartRL>();
             services.AddTransient<IFeedBackBL, FeedBackBL>();
             services.AddTransient<IFeedBackRL, FeedBackRL>();
+            services.AddTransient<IAddressBL, AddressBL>();
+            services.AddTransient<IAddressRL, AddressRL>();
+            services.AddTransient<IOrdersBL, OrdersBL>();
+            services.AddTransient<IOrdersRL, OrdersRL>();
+
 
 
             services.AddAuthentication(option =>
